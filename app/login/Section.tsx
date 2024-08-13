@@ -25,6 +25,7 @@ const Section = () => {
         })
 
         if (login.success === true) {
+            reset()
             Cookies.set('access-token', login.data.accessToken)
             setLoginSuccess(true)
             setTimeout(() => {
@@ -32,6 +33,7 @@ const Section = () => {
                 setLoginSuccess(undefined)
             }, 5000)
         } else {
+            reset()
             setErrorMessage(login.error.message)
             setLoginSuccess(false)
             setTimeout(() => {
@@ -62,13 +64,16 @@ const Section = () => {
                 <div className="text-xl font-bold">Hi Store</div>
                 <div className="text-4xl font-extrabold uppercase mt-4">Login </div>
                 <form action="">
-                    <div className="mt-10 grid gap-4">
+                    <div className="mt-10 grid">
+                        {/* EMAIL */}
                         <TextField {...register('email', { required: 'Email harus di isi' })} id="outlined-basic" label="Email" className='w-full' variant="outlined" />
                         {errors.email &&
                             <div className="mt-2 text-end text-red-600 text-xs w-fit">
                                 {errors.email.message}
                             </div>
                         }
+
+                        {/* PASSWORD */}
                         <FormControl sx={{ width: '25ch' }} className='w-full' variant="outlined">
                             <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
                             <OutlinedInput
