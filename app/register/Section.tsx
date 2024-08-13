@@ -5,12 +5,24 @@ import { FormControl, IconButton, InputAdornment, InputLabel, OutlinedInput } fr
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import Link from 'next/link';
+import { SubmitHandler, useForm } from 'react-hook-form';
+import { RegisterDTO } from '@/DTO/auth.dto';
+import { RegisterFunction } from '@/function/auth';
 
 const Section = () => {
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-    
 
+    const { register, handleSubmit, watch, reset, setValue, formState: { errors }, } = useForm<RegisterDTO>()
+
+    const onSubmit: SubmitHandler<RegisterDTO> = async (data) => {
+        try {
+            const register = await RegisterFunction(data)
+            
+        } catch (error) {
+
+        }
+    }
     const handleClickShowPassword = () => setShowPassword((show) => !show);
     const handleClickShowConfirmPassword = () => setShowConfirmPassword((show) => !show);
 
