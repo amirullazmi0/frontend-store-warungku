@@ -64,42 +64,48 @@ const Section = () => {
                 <div className="text-xl font-bold">Hi Store</div>
                 <div className="text-4xl font-extrabold uppercase mt-4">Login </div>
                 <form action="">
-                    <div className="mt-10 grid">
+                    <div className="mt-10 grid gap-4">
                         {/* EMAIL */}
-                        <TextField {...register('email', { required: 'Email harus di isi' })} id="outlined-basic" label="Email" className='w-full' variant="outlined" />
-                        {errors.email &&
-                            <div className="mt-2 text-end text-red-600 text-xs w-fit">
-                                {errors.email.message}
-                            </div>
-                        }
+                        <div className="">
+                            <TextField {...register('email', { required: 'Email harus di isi' })} id="outlined-basic" label="Email" className='w-full' variant="outlined" />
+                            {errors.email &&
+                                <div className="mt-2 text-end text-red-600 text-xs w-fit">
+                                    {errors.email.message}
+                                </div>
+                            }
+                        </div>
 
                         {/* PASSWORD */}
-                        <FormControl sx={{ width: '25ch' }} className='w-full' variant="outlined">
-                            <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
-                            <OutlinedInput
-                                id="outlined-adornment-password"
-                                type={showPassword ? 'text' : 'password'}
-                                {...register('password', { required: 'Password harus di isi' })}
-                                endAdornment={
-                                    <InputAdornment position="end">
-                                        <IconButton
-                                            aria-label="toggle password visibility"
-                                            onClick={handleClickShowPassword}
-                                            onMouseDown={handleMouseDownPassword}
-                                            edge="end"
-                                        >
-                                            {showPassword ? <VisibilityOff /> : <Visibility />}
-                                        </IconButton>
-                                    </InputAdornment>
-                                }
-                                label="Password"
-                            />
-                        </FormControl>
-                        {errors.password &&
-                            <div className="mt-2 text-end text-red-600 text-xs w-fit">
-                                {errors.password.message}
-                            </div>
-                        }
+                        <div className="">
+
+                            <FormControl sx={{ width: '25ch' }} className='w-full' variant="outlined">
+                                <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
+                                <OutlinedInput
+                                    id="outlined-adornment-password"
+                                    type={showPassword ? 'text' : 'password'}
+                                    {...register('password', { required: 'Password harus di isi' })}
+                                    endAdornment={
+                                        <InputAdornment position="end">
+                                            <IconButton
+                                                aria-label="toggle password visibility"
+                                                onClick={handleClickShowPassword}
+                                                onMouseDown={handleMouseDownPassword}
+                                                edge="end"
+                                            >
+                                                {showPassword ? <VisibilityOff /> : <Visibility />}
+                                            </IconButton>
+                                        </InputAdornment>
+                                    }
+                                    label="Password"
+                                />
+                            </FormControl>
+                            {errors.password &&
+                                <div className="mt-2 text-end text-red-600 text-xs w-fit">
+                                    {errors.password.message}
+                                </div>
+                            }
+                        </div>
+
                         <Button type='submit' onClick={handleSubmit(onSubmit)} variant="contained" disableElevation>
                             Login
                         </Button>

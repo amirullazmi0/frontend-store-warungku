@@ -8,10 +8,17 @@ import Link from 'next/link';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { RegisterDTO } from '@/DTO/auth.dto';
 import { RegisterFunction } from '@/function/auth';
+import Cookies from "js-cookie";
+import { useRouter } from 'next/navigation';
+import { AlertFailed, AlertSuccess } from '../ComponentGlobals/alert';
 
 const Section = () => {
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+    const [loginSuccess, setLoginSuccess] = useState<boolean | undefined>(undefined)
+    const [errorMessage, setErrorMessage] = useState<string>('')
+
+    const navigation = useRouter()
 
     const { register, handleSubmit, watch, reset, setValue, formState: { errors }, } = useForm<RegisterDTO>()
     const password = watch('password', '');
@@ -20,9 +27,19 @@ const Section = () => {
             const register = await RegisterFunction(data)
 
             if (register.success === true) {
+                setLoginSuccess(true)
+                setTimeout(() => {
+                    navigation.push('/login')
+                    setLoginSuccess(undefined)
+                }, 5000)
+            } else {
                 reset()
-            }else{
-                
+                setErrorMessage(register.error.message)
+                setLoginSuccess(false)
+                setTimeout(() => {
+                    setLoginSuccess(undefined)
+                    setErrorMessage('')
+                }, 5000)
             }
         } catch (error) {
 
@@ -38,109 +55,124 @@ const Section = () => {
         event.preventDefault();
     };
     return (
-        <div className='lg:md:w-[50%] rounded-2xl bg-white shadow-lg flex overflow-hidden'>
-            <div className="lg:md:w-[50%] w-[90%] p-10 ease-in-out duration-200 delay-200">
+        <div className='lg:md:w-[70%] rounded-2xl bg-white shadow-lg flex overflow-hidden'>
+            {loginSuccess === true ? (
+                <AlertSuccess message="Login berhasil" />
+            ) : (
+                loginSuccess === false && <AlertFailed message={errorMessage} />
+            )}
+            <div className="lg:md:w-[70%] w-[90%] p-10 ease-in-out duration-200 delay-200">
                 <div className="text-xl font-bold">Hi Store</div>
                 <div className="text-4xl font-extrabold uppercase mt-4">Register</div>
                 <form action="">
                     <div className="mt-10 grid gap-4">
                         {/* EMAIL */}
-                        <TextField
-                            {...register(`email`, {
-                                required: 'Email harus di isi',
-                                pattern: {
-                                    value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
-                                    message: 'Invalid email address',
-                                },
-                            })}
-                            id="outlined-basic"
-                            label="Email"
-                            className='w-full'
-                            variant="outlined" />
-                        {errors.email &&
-                            <div className="mt-2 text-end text-red-600 text-xs w-fit">
-                                {errors.email.message}
-                            </div>
-                        }
+                        <div className="">
+                            <TextField
+                                {...register(`email`, {
+                                    required: 'Email harus di isi',
+                                    pattern: {
+                                        value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
+                                        message: 'Invalid email address',
+                                    },
+                                })}
+                                id="outlined-basic"
+                                label="Email"
+                                className='w-full'
+                                variant="outlined" />
+                            {errors.email &&
+                                <div className="mt-2 text-end text-red-600 text-xs w-fit">
+                                    {errors.email.message}
+                                </div>
+                            }
+                        </div>
 
                         {/* NAMA LENGKAP */}
-                        <TextField
-                            {...register('name', {
-                                required: 'Nama lengkap harus di isi',
-                                pattern: {
-                                    value: /^[A-Za-z\s]+$/,
-                                    message: 'Nama harus huruf',
-                                },
-                            })}
-                            id="outlined-basic"
-                            label="Nama Lengkap"
-                            className='w-full'
-                            variant="outlined" />
-                        {errors.name &&
-                            <div className="mt-2 text-end text-red-600 text-xs w-fit">
-                                {errors.name.message}
-                            </div>
-                        }
-
-                        {/* PASSWORD */}
-                        <FormControl sx={{ width: '25ch' }} className='w-full' variant="outlined">
-                            <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
-                            <OutlinedInput
-                                id="outlined-adornment-password"
-                                type={showPassword ? 'text' : 'password'}
-                                {...register(`password`, { required: 'Password harus di isi' })}
-                                endAdornment={
-                                    <InputAdornment position="end">
-                                        <IconButton
-                                            aria-label="toggle password visibility"
-                                            onClick={handleClickShowPassword}
-                                            onMouseDown={handleMouseDownPassword}
-                                            edge="end"
-                                        >
-                                            {showPassword ? <VisibilityOff /> : <Visibility />}
-                                        </IconButton>
-                                    </InputAdornment>
-                                }
-                                label="Password"
-                            />
-                        </FormControl>
-                        {errors.password &&
-                            <div className="mt-2 text-end text-red-600 text-xs w-fit">
-                                {errors.password.message}
-                            </div>
-                        }
-
-                        {/* KONFIRMASI PASSWORD */}
-                        <FormControl sx={{ width: '25ch' }} className='w-full' variant="outlined">
-                            <InputLabel htmlFor="outlined-adornment-password">Konfirmasi Password</InputLabel>
-                            <OutlinedInput
-                                id="outlined-adornment-password"
-                                type={showConfirmPassword ? 'text' : 'password'}
-                                {...register('confirmPassword', {
-                                    required: 'Konfirmasi password harus di isi',
-                                    validate: (value) =>
-                                        value === password || 'Konfirmasi password tidak sama',
+                        <div className="">
+                            <TextField
+                                {...register('name', {
+                                    required: 'Nama lengkap harus di isi',
+                                    pattern: {
+                                        value: /^[A-Za-z\s]+$/,
+                                        message: 'Nama harus huruf',
+                                    },
                                 })}
-                                endAdornment={
-                                    <InputAdornment position="end">
-                                        <IconButton
-                                            aria-label="toggle password visibility"
-                                            onClick={handleClickShowConfirmPassword}
-                                            onMouseDown={handleMouseDownConfirmPassword}
-                                            edge="end"
-                                        >
-                                            {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
-                                        </IconButton>
-                                    </InputAdornment>
+                                id="outlined-basic"
+                                label="Nama Lengkap"
+                                className='w-full'
+                                variant="outlined" />
+                            {errors.name &&
+                                <div className="mt-2 text-end text-red-600 text-xs w-fit">
+                                    {errors.name.message}
+                                </div>
+                            }
+                        </div>
+
+                        <div className="lg:md:flex grid gap-4 w-full ">
+                            {/* PASSWORD */}
+                            <div className="w-full">
+                                <FormControl className='w-full' variant="outlined">
+                                    <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
+                                    <OutlinedInput
+                                        id="outlined-adornment-password"
+                                        type={showPassword ? 'text' : 'password'}
+                                        {...register(`password`, { required: 'Password harus di isi' })}
+                                        endAdornment={
+                                            <InputAdornment position="end">
+                                                <IconButton
+                                                    aria-label="toggle password visibility"
+                                                    onClick={handleClickShowPassword}
+                                                    onMouseDown={handleMouseDownPassword}
+                                                    edge="end"
+                                                >
+                                                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                                                </IconButton>
+                                            </InputAdornment>
+                                        }
+                                        label="Password"
+                                    />
+                                </FormControl>
+                                {errors.password &&
+                                    <div className="mt-2 text-end text-red-600 text-xs w-fit">
+                                        {errors.password.message}
+                                    </div>
                                 }
-                                label="Konfirmasi Password"
-                            />
-                        </FormControl>
-                        {errors.confirmPassword &&
-                            <div className="mt-2 text-end text-red-600 text-xs w-fit">
-                                {errors.confirmPassword.message}
                             </div>
-                        }
+
+                            {/* KONFIRMASI PASSWORD */}
+                            <div className="w-full">
+                                <FormControl className='w-full' variant="outlined">
+                                    <InputLabel htmlFor="outlined-adornment-password">Konfirmasi Password</InputLabel>
+                                    <OutlinedInput
+                                        id="outlined-adornment-password"
+                                        type={showConfirmPassword ? 'text' : 'password'}
+                                        {...register('confirmPassword', {
+                                            required: 'Konfirmasi password harus di isi',
+                                            validate: (value) =>
+                                                value === password || 'Konfirmasi password tidak sama',
+                                        })}
+                                        endAdornment={
+                                            <InputAdornment position="end">
+                                                <IconButton
+                                                    aria-label="toggle password visibility"
+                                                    onClick={handleClickShowConfirmPassword}
+                                                    onMouseDown={handleMouseDownConfirmPassword}
+                                                    edge="end"
+                                                >
+                                                    {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
+                                                </IconButton>
+                                            </InputAdornment>
+                                        }
+                                        label="Konfirmasi Password"
+                                    />
+                                </FormControl>
+                                {errors.confirmPassword &&
+                                    <div className="mt-2 text-end text-red-600 text-xs w-fit">
+                                        {errors.confirmPassword.message}
+                                    </div>
+                                }
+                            </div>
+                        </div>
 
                         <Button type='submit' onClick={handleSubmit(onSubmit)} variant="contained" disableElevation>
                             Login
@@ -150,7 +182,7 @@ const Section = () => {
                     </div>
                 </form>
             </div>
-            <div className="lg:md:w-[50%] w-[10%] bgr-primary"></div>
+            <div className="lg:md:w-[30%] w-[10%] bgr-primary"></div>
         </div>
     )
 }

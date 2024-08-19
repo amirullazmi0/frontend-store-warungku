@@ -1,7 +1,6 @@
 import { DeleteItemStoreDTO, PostItemStoreDTO } from "@/DTO/itemStore.dto";
-import axios, { AxiosError } from "axios";
+import axios from "axios";
 import Cookies from 'js-cookie'
-import { headers } from "next/headers";
 
 const API_URL = process.env.API_URL
 

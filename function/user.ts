@@ -1,5 +1,5 @@
 import { PasswordUpdateDTO, UpdateAddressDTO, UpdateLogoDTO, UserProfileUpdateDTO } from "@/DTO/user.dto";
-import axios, { AxiosError } from "axios";
+import axios from "axios";
 import Cookies from 'js-cookie'
 
 const API_URL = process.env.API_URL
