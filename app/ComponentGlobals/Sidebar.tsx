@@ -6,10 +6,15 @@ import { IconButton } from '@mui/material';
 import SpaceDashboardIcon from '@mui/icons-material/SpaceDashboard';
 import CloseIcon from '@mui/icons-material/Close';
 import ReceiptIcon from '@mui/icons-material/Receipt';
+import { useRouter } from 'next/navigation';
 
 const Sidebar = () => {
     const storeContext = useContext(StoreContext)
+    const navigation = useRouter()
 
+    const handleNavigation = (e: string) => {
+        navigation.push(e)
+    }
     const handleSidebar = () => {
         storeContext.setActiveSidebar(!storeContext.activeSidebar);
     }
@@ -23,7 +28,7 @@ const Sidebar = () => {
                     </IconButton>
                 </div>
                 <div className="grid gap-4 mt-4">
-                    <button className='p-2 hover:bg-slate-100 w-full rounded-sm active:scale-95 duration-200 flex justify-between'>
+                    <button onClick={() => handleNavigation('/store')} className='p-2 hover:bg-slate-100 w-full rounded-sm active:scale-95 duration-200 flex justify-between'>
                         Dashboard
                         <SpaceDashboardIcon />
                     </button>

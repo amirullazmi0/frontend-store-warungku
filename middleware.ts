@@ -8,7 +8,7 @@ export async function middleware(request: NextRequest) {
 
     if (!checkAuth || !accessToken) {
         request.cookies.delete('access-token')
-        if (request.nextUrl.pathname == ('/')) {
+        if (request.nextUrl.pathname.startsWith('/store') || request.nextUrl.pathname == ('/')) {
             return NextResponse.redirect(new URL("/login", request.url))
         }
     }
@@ -16,5 +16,9 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-    matcher: ["/:path*"],
+    matcher: [
+        "/:path*",
+        "/store",
+        "/store/:path*"
+    ],
 }   

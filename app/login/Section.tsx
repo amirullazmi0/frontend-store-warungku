@@ -26,11 +26,9 @@ const Section = () => {
 
         if (login.success === true) {
             reset()
-            Cookies.set('access-token', login.data.accessToken)
             setLoginSuccess(true)
             setTimeout(() => {
                 navigation.push('/')
-                setLoginSuccess(undefined)
             }, 5000)
         } else {
             reset()

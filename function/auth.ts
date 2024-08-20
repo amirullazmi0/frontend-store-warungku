@@ -18,7 +18,7 @@ export const CheckAuthFunction = async () => {
         if (response.data.success === true) {
             return true
         }
-    } catch (error: any) {
+    } catch (error) {
         return false
     }
 }
@@ -26,9 +26,10 @@ export const CheckAuthFunction = async () => {
 export const LoginFunction = async (param: loginDTO) => {
     try {
         const response = await axios.post(`${API_URL}/auth/login`, param)
+        cookies().set('access-token', response.data.data?.accessToken)
         return response.data
     } catch (error) {
-
+        return false
     }
 }
 
@@ -37,7 +38,7 @@ export const RegisterFunction = async (param: RegisterDTO) => {
         const response = await axios.post(`${API_URL}/auth/register`, param)
         return response.data
     } catch (error) {
-
+        return false
     }
 }
 
