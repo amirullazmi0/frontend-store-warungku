@@ -32,7 +32,7 @@ const Section = () => {
             }, 5000)
         } else {
             reset()
-            setErrorMessage(login.error.message)
+            setErrorMessage(login?.error?.message)
             setLoginSuccess(false)
             setTimeout(() => {
                 setLoginSuccess(undefined)

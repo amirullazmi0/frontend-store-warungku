@@ -14,7 +14,7 @@ export const StoreContext = createContext<StoreContextType>({
 
 
 export const LayoutStoreProvider = ({ children }: { children: React.ReactNode }) => {
-    const [activeSidebar, setActiveSidebar] = useState<boolean>(true)
+    const [activeSidebar, setActiveSidebar] = useState<boolean>(false)
 
     return (
         <StoreContext.Provider value={{

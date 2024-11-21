@@ -1,19 +1,17 @@
-import React from 'react'
-import Tron from '../ComponentGlobals/Tron'
-import { Button } from '@mui/material'
-import { useRouter } from 'next/navigation'
+import React from 'react';
+import { Box, Button, Fab, IconButton } from '@mui/material';
+import ItemStore from './component/ItemStore';
+import ButtonAddStore from './component/ButtonAddStore';
 
 const Section = () => {
-    const navigation = useRouter()
+	return (
+		<section>
+			<Box className='flex flex-col gap-4 w-full h-full'>
+				<ItemStore />
+				<ButtonAddStore />
+			</Box>
+		</section>
+	);
+};
 
-    const handleNavigation = (e: string) => {
-        navigation.push(e)
-    }
-    return (
-        <section>
-            <Button onClick={() => handleNavigation('/store/add-item')} variant='contained' disableElevation>+ item</Button>
-        </section>
-    )
-}
-
-export default Section
+export default Section;
