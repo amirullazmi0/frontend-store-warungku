@@ -22,7 +22,7 @@ const Sidebar = () => {
 	return (
 		<div
 			className={`${
-				storeContext.activeSidebar ? `lg:md:w-[20vw] w-[70vw]` : `w-[0vw]`
+				storeContext.activeSidebar ? `lg:w-[20vw] md:w-[30vw] w-[70vw]` : `w-[0vw]`
 			} min-h-screen h-full shadow-xl fixed top-0 bottom-0 left-0 z-50 bg-white duration-500 ease overflow-hidden`}>
 			<div className='p-4 flex-col gap-4'>
 				<div className='w-full flex justify-end'>

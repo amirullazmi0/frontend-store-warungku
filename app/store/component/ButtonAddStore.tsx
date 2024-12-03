@@ -15,6 +15,7 @@ const ButtonAddStore = () => {
 			<IconButton
 				onClick={() => handleNavigation('/store/add-item')}
 				className='w-fit'
+				size='large'
 				sx={{
 					backgroundColor: colors.primary,
 					color: 'white',

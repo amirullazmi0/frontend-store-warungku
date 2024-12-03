@@ -9,6 +9,8 @@ import Image from 'next/image';
 import CloseIcon from '@mui/icons-material/Close';
 import axios from 'axios';
 import Cookies from 'js-cookie';
+import { useRouter } from 'next/navigation';
+import { AlertSuccess, IsLoading } from '@/app/ComponentGlobals/alert';
 const Form = () => {
 	const form = useForm({
 		resolver: yupResolver(formItemStoreSchema),
@@ -16,10 +18,11 @@ const Form = () => {
 	});
 
 	const { control, getValues, handleSubmit, reset, setValue } = form;
-
+	const [loading, setLoading] = useState<boolean>(false);
 	const apiUrl = process.env.API_URL;
 	const accessToken = Cookies.get('access-token');
-
+	const navigation = useRouter();
+	const [postSuccess, setPostSuccess] = useState<boolean>(false);
 	const handleSubmitForm = async () => {
 		const formData = new FormData();
 		const values = getValues();
@@ -35,14 +38,22 @@ const Form = () => {
 			});
 		}
 
+		setLoading(true);
+
 		try {
 			const response = await axios.post(`${apiUrl}/api/item-store`, formData, {
 				headers: {
 					Authorization: `Bearer ${accessToken}`,
 				},
 			});
+			if (response.data) {
+				setLoading(false);
+				setPostSuccess(true);
+			}
 
-			console.log(response.data);
+			setTimeout(() => {
+				navigation.push('/store');
+			}, 3000);
 		} catch (error) {}
 	};
 
@@ -91,7 +102,12 @@ const Form = () => {
 	};
 
 	return (
-		<Box className='grid grid-cols-2 gap-4 p-4 shadow-lg lg:w-[70%] rounded-2xl'>
+		<Box className='grid grid-cols-2 gap-4 p-4 shadow-lg lg:w-[70%] rounded-2xl h-fit'>
+			<AlertSuccess
+				message='Berhasil Tambah Barang'
+				open={postSuccess}
+			/>
+			<IsLoading open={loading} />
 			{/* NAME */}
 			<Controller
 				control={control}

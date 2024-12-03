@@ -8,11 +8,13 @@ import Image from 'next/image';
 import defaultJpg from '@/public/image/defaultJpg.png';
 import colors from '@/app/ComponentGlobals/colors';
 import { formatNumber } from '@/app/utils/formatNumber';
-import ContentPasteSearchIcon from '@mui/icons-material/ContentPasteSearch';
+import Alert from '@mui/material/Alert';
+import CheckIcon from '@mui/icons-material/Check';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import DoneIcon from '@mui/icons-material/Done';
 import CloseIcon from '@mui/icons-material/Close';
+import { useRouter } from 'next/navigation';
 
 interface modalAlertDeleteType {
 	open: boolean;
@@ -25,6 +27,7 @@ const ItemStore = () => {
 	const [alertDelete, setAlertDelete] = useState<boolean>(false);
 	const [selectedDeleteItem, setSelectedDeletedItem] = useState<string>('');
 	const [alertSuccess, setAlertSuccess] = useState<boolean>(false);
+	const navigation = useRouter();
 	const handleDelete = async () => {
 		try {
 			const response = await axios.delete(`${apiUrl}/api/item-store`, {
@@ -122,61 +125,70 @@ const ItemStore = () => {
 	};
 
 	return (
-		<Box className='grid lg:grid-cols-6 md:grid-cols-4 grid-cols-2 gap-5  min-h-screen w-full'>
-			<RenderAlertDelete open={alertDelete} />
-			{item?.map((i, index) => {
-				return (
-					<Button
-						className='shadow-lg flex flex-col items-center gap-2'
-						key={index}
-						sx={{
-							padding: '10px',
-							borderRadius: '10px',
-							backgroundColor: 'white',
-							textTransform: 'none',
-							':hover': {
-								backgroundColor: 'white',
-							},
-						}}>
-						<Image
-							alt={i.name}
-							height={100}
-							width={500}
-							className='aspect-square object-cover'
-							src={i.itemStoreImages[0]?.path ?? defaultJpg}
-							style={{
+		<>
+			{alertSuccess && (
+				<Alert
+					icon={<CheckIcon fontSize='inherit' />}
+					severity='success'>
+					Barang Behasil di hapus
+				</Alert>
+			)}
+			<Box className='grid lg:grid-cols-6 md:grid-cols-4 grid-cols-2 gap-5  min-h-screen w-full h-fit'>
+				<RenderAlertDelete open={alertDelete} />
+				{item?.map((i, index) => {
+					return (
+						<Button
+							className='shadow-lg flex flex-col items-center gap-2 h-fit'
+							// onClick={() => navigation.push(`/store/item-store/${i.id}`)}
+							key={index}
+							sx={{
+								padding: '10px',
 								borderRadius: '10px',
-							}}
-						/>
-						<Typography
-							sx={{
-								color: 'black',
-								fontWeight: 600,
+								backgroundColor: 'white',
+								textTransform: 'none',
+								':hover': {
+									backgroundColor: 'white',
+								},
 							}}>
-							{i.name}
-						</Typography>
-						<Typography
-							sx={{
-								width: '100%',
-								textAlign: 'left',
-							}}>
-							Rp.{' '}
-							<span
+							<Image
+								alt={i.name}
+								height={100}
+								width={500}
+								className='aspect-square object-cover'
+								src={i.itemStoreImages[0]?.path ?? defaultJpg}
 								style={{
+									borderRadius: '10px',
+								}}
+							/>
+							<Typography
+								sx={{
+									color: 'black',
 									fontWeight: 600,
 								}}>
-								{formatNumber(i.price)}
-							</span>
-						</Typography>
-						<Typography
-							sx={{
-								width: '100%',
-								textAlign: 'left',
-							}}>
-							qty : {i.qty}
-						</Typography>
-						<Box className='flex w-full justify-end gap-1'>
-							<IconButton
+								{i.name}
+							</Typography>
+							<Typography
+								sx={{
+									width: '100%',
+									textAlign: 'left',
+								}}>
+								Rp.{' '}
+								<span
+									style={{
+										fontWeight: 600,
+									}}>
+									{formatNumber(i.price)}
+								</span>
+							</Typography>
+							<Typography
+								sx={{
+									width: '100%',
+									textAlign: 'left',
+								}}>
+								qty : {i.qty}
+							</Typography>
+							<Box className='flex w-full justify-center gap-1'>
+								{/* <IconButton
 								sx={{
 									backgroundColor: colors.success,
 									color: 'white',
@@ -185,33 +197,34 @@ const ItemStore = () => {
 									},
 								}}>
 								<ContentPasteSearchIcon />
-							</IconButton>
-							<IconButton
-								sx={{
-									backgroundColor: colors.warning,
-									// color: 'black',
-									':hover': {
+							</IconButton> */}
+								<IconButton
+									sx={{
 										backgroundColor: colors.warning,
-									},
-								}}>
-								<EditIcon />
-							</IconButton>
-							<IconButton
-								onClick={() => handleAlertDelete(i.id)}
-								sx={{
-									backgroundColor: colors.error,
-									color: 'white',
-									':hover': {
+										// color: 'black',
+										':hover': {
+											backgroundColor: colors.warning,
+										},
+									}}>
+									<EditIcon />
+								</IconButton>
+								<IconButton
+									onClick={() => handleAlertDelete(i.id)}
+									sx={{
 										backgroundColor: colors.error,
-									},
-								}}>
-								<DeleteIcon />
-							</IconButton>
-						</Box>
-					</Button>
-				);
-			})}
-		</Box>
+										color: 'white',
+										':hover': {
+											backgroundColor: colors.error,
+										},
+									}}>
+									<DeleteIcon />
+								</IconButton>
+							</Box>
+						</Button>
+					);
+				})}
+			</Box>
+		</>
 	);
 };
 

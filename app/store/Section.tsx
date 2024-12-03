@@ -6,7 +6,7 @@ import ButtonAddStore from './component/ButtonAddStore';
 const Section = () => {
 	return (
 		<section>
-			<Box className='flex flex-col gap-4 w-full h-full'>
+			<Box className='grid w-full'>
 				<ItemStore />
 				<ButtonAddStore />
 			</Box>
