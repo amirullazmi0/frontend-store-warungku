@@ -17,7 +17,7 @@ import { RegisterDTO } from '@/DTO/auth.dto';
 import { RegisterFunction } from '@/function/auth';
 import Cookies from 'js-cookie';
 import { useRouter } from 'next/navigation';
-import { AlertFailed, AlertSuccess } from '../ComponentGlobals/Alert';
+import { AlertFailed, AlertSuccess } from '../ComponentGlobals/alert';
 
 const Section = () => {
   const [showPassword, setShowPassword] = useState(false);

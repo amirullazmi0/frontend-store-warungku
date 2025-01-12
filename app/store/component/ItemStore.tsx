@@ -3,7 +3,7 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import Cookies from 'js-cookie';
 import { itemStore } from '@/DTO/itemStore.dto';
-import { Box, Button, IconButton, Typography } from '@mui/material';
+import { Box, Button, FormControl, FormHelperText, IconButton, InputAdornment, OutlinedInput, Typography } from '@mui/material';
 import Image from 'next/image';
 import defaultJpg from '@/public/image/defaultJpg.png';
 import colors from '@/app/ComponentGlobals/colors';
@@ -16,6 +16,8 @@ import DoneIcon from '@mui/icons-material/Done';
 import CloseIcon from '@mui/icons-material/Close';
 import DescriptionIcon from '@mui/icons-material/Description';
 import { useRouter } from 'next/navigation';
+
+import SearchIcon from '@mui/icons-material/Search';
 
 interface modalAlertDeleteType {
 	open: boolean;
@@ -173,7 +175,7 @@ const ItemStore = () => {
 
 		return (
 			<Box className={`fixed h-screen w-screen justify-center items-center bg-slate-950 overflow-hidden scroll z-50 top-0 left-0 bg-opacity-30 ${open ? 'flex' : 'hidden'}`}>
-				<Box className='bg-white rounded-xl grid gap-10 p-5 lg:w-[40%] md:w-[60%] w-[80%]'>
+				<Box className='bg-white rounded-xl grid gap-10 p-5 lg:w-[40%] md:w-[60%] w-[100%]'>
 					<Typography className='text-center'>Yakin untuk menghapus ?</Typography>
 					<Box className='flex justify-center w-full gap-2'>
 						<Button
@@ -215,15 +217,43 @@ const ItemStore = () => {
 					Success! Added to Cart
 				</Alert>
 			)}
-			<Box className='grid lg:grid-cols-6 md:grid-cols-4 grid-cols-2 gap-5  min-h-screen w-full h-fit'>
+			<form
+				action=''
+				className='flex items-center gap-2'>
+				<FormControl
+					sx={{ width: '100%' }}
+					variant='outlined'>
+					<OutlinedInput
+						id='outlined-adornment-weight'
+						endAdornment={
+							<InputAdornment position='end'>
+								<SearchIcon />
+							</InputAdornment>
+						}
+						aria-describedby='outlined-weight-helper-text'
+						inputProps={{
+							'aria-label': 'weight',
+						}}
+					/>
+				</FormControl>
+				<Button
+					variant='contained'
+					sx={{
+						height: '100%',
+					}}>
+					Cari
+				</Button>
+			</form>
+
+			<Box className='grid lg:grid-cols-6 md:grid-cols-4 lg:gap-5 md:gap-3 gap-1  min-h-screen w-full h-fit'>
 				<RenderAlertDelete open={alertDelete} />
 				{item?.map((i, index) => {
 					return (
 						<Box
-							className='shadow-lg flex flex-col items-center gap-2 h-fit'
+							className='shadow-lg flex flex-col items-center gap-2 h-fit min-w-40'
 							key={index}
 							sx={{
-								padding: '10px',
+								padding: '0.625rem',
 								borderRadius: '10px',
 								backgroundColor: 'white',
 								textTransform: 'none',
@@ -268,7 +298,7 @@ const ItemStore = () => {
 								}}>
 								qty : {i.qty}
 							</Typography>
-							<Box className='flex w-full justify-center gap-1'>
+							<Box className='flex flex-wrap w-full justify-center gap-1'>
 								<IconButton
 									onClick={() => navigation.push(`/store/item-store/${i.id}`)}
 									sx={{
