@@ -180,7 +180,7 @@ export const LayoutStoreProvider = ({ children }: { children: React.ReactNode })
 										filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.08))',
 									},
 								}}>
-								<MenuItem onClick={handleClose}>My account</MenuItem>
+								<MenuItem onClick={() => navigation.push('/store/account')}>My account</MenuItem>
 								<MenuItem onClick={handleLogout}>Logout</MenuItem>
 							</Menu>
 						</div>
@@ -207,7 +207,7 @@ export const LayoutStoreProvider = ({ children }: { children: React.ReactNode })
 			</Drawer>
 			<Main open={open}>
 				<DrawerHeader />
-				<div className='p-4'>{children}</div>
+				<div className=''>{children}</div>
 			</Main>
 		</Box>
 	);
