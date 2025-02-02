@@ -1,5 +1,5 @@
 import colors from '@/app/ComponentGlobals/colors';
-import { formItemStoreSchema } from '@/app/lib/config/config';
+import { formItemStoreSchema, formUpdateItemStoreSchema } from '@/app/lib/config/config';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Box, Button, Checkbox, FormControlLabel, InputLabel, styled, TextField, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
@@ -12,10 +12,10 @@ import Cookies from 'js-cookie';
 import { useRouter } from 'next/navigation';
 import { AlertSuccess, IsLoading } from '@/app/ComponentGlobals/alert';
 import { GlobalsAxiosResponse } from '@/DTO/globals.dto';
-import { CategoryDTO } from '@/DTO/itemStore.dto';
-const Form = () => {
+import { CategoryDTO, itemStore, ItemStoreImage } from '@/DTO/itemStore.dto';
+const Form = ({ id }: { id: string }) => {
 	const form = useForm({
-		resolver: yupResolver(formItemStoreSchema),
+		resolver: yupResolver(formUpdateItemStoreSchema),
 		mode: 'onChange',
 	});
 
@@ -29,12 +29,18 @@ const Form = () => {
 		const formData = new FormData();
 		const values = getValues();
 
+		formData.append('id', values.id);
 		formData.append('name', values.name);
 		formData.append('price', values.price.toString());
 		formData.append('qty', values.qty.toString());
 		formData.append('desc', values.desc || '');
+
 		categorySelect.forEach(id => {
 			formData.append('category', id);
+		});
+
+		imageBefore?.forEach(item => {
+			formData.append('imageBefore', item.id);
 		});
 
 		if (values.images?.length) {
@@ -43,14 +49,15 @@ const Form = () => {
 			});
 		}
 
-		setLoading(true);
+		// setLoading(true);
 
 		try {
-			const response = await axios.post(`${apiUrl}/api/item-store`, formData, {
+			const response = await axios.patch(`${apiUrl}/api/item-store`, formData, {
 				headers: {
 					Authorization: `Bearer ${accessToken}`,
 				},
 			});
+
 			if (response.data) {
 				setLoading(false);
 				setPostSuccess(true);
@@ -85,7 +92,7 @@ const Form = () => {
 	const handleDeleteSelectedImage = (indexToDelete: number) => {
 		const currentImages = getValues('images');
 
-		const updatedImages = currentImages.filter((_, index) => index !== indexToDelete);
+		const updatedImages = currentImages?.filter((_, index) => index !== indexToDelete);
 		const updatedImagesPreview = imagePreview.filter((_, index) => index !== indexToDelete);
 
 		setIamgePreview(updatedImagesPreview);
@@ -141,14 +148,44 @@ const Form = () => {
 		getCategrory();
 	}, []);
 
+	const [imageBefore, setImageBefore] = useState<ItemStoreImage[]>();
+
+	const handleDeleteSelectedImageBefore = (indexToDelete: number) => {
+		setImageBefore(prevImages => (prevImages ? prevImages.filter((_, index) => index !== indexToDelete) : []));
+	};
 	useEffect(() => {
-		console.log(categorySelect);
-	}, [categorySelect]);
+		const getItem = async () => {
+			try {
+				const response: {
+					data: GlobalsAxiosResponse<itemStore>;
+				} = await axios.get(`${apiUrl}/api/item-store?id=${id}`, {
+					headers: {
+						Authorization: `Bearer ${accessToken}`,
+					},
+				});
+
+				if (response.data) {
+					const item = response.data.data;
+					setValue('desc', item?.desc);
+					setValue('name', item?.name ?? '');
+					setValue('price', item?.price ?? 0);
+					setValue(`qty`, item?.qty ?? 0);
+					setValue('id', id);
+
+					const selectedCategories = item?.categoriesItemStore?.map(cat => cat.categoryId) ?? [];
+					setImageBefore(item?.itemStoreImages);
+					setCategorySelect(selectedCategories);
+				}
+			} catch (error) {}
+		};
+
+		getItem();
+	}, []);
 
 	return (
 		<Box className='grid lg:grid-cols-2 gap-4 p-4 shadow-lg lg:w-[70%] rounded-2xl h-fit'>
 			<AlertSuccess
-				message='Berhasil Tambah Barang'
+				message='Berhasil Update Barang'
 				open={postSuccess}
 			/>
 			<IsLoading open={loading} />
@@ -388,6 +425,45 @@ const Form = () => {
 
 			{/* IMAGES */}
 			<Box className='lg:col-span-2 md:col-span-2 grid gap-2'>
+				<Typography>Gambar Anda :</Typography>
+				<Box className='grid lg:grid-cols-4 md:grid-cols-4 grid-cols-2 gap-2'>
+					{imageBefore && imageBefore.length > 0 ? (
+						imageBefore.map((item, index) => (
+							<Box
+								key={index}
+								className='bg-white rounded-md shadow-xl relative h-fit overflow-hidden'>
+								<Button
+									onClick={() => handleDeleteSelectedImageBefore(index)}
+									className='absolute right-0 top-0 bg-white hover:bg-white m-1 shadow-lg'
+									sx={{
+										width: '2rem',
+										height: '2rem',
+										minWidth: '2rem',
+										padding: 0,
+										borderRadius: '10px',
+									}}>
+									<CloseIcon className='text-red-600' />
+								</Button>
+								<Image
+									width={500}
+									height={500}
+									className='object-cover object-center w-full h-full '
+									alt={item.path || 'uploaded-image'}
+									src={item.path || defaultJpg}
+								/>
+							</Box>
+						))
+					) : (
+						<Box className='lg:col-span-4 md:col-span-4 col-span-2 bg-white rounded-md shadow-xl relative overflow-hidden flex justify-center items-center p-2 w-full'>
+							<Typography className='text-center text-slate-300'>Tidak Ada Gambar</Typography>
+						</Box>
+					)}
+				</Box>
+			</Box>
+
+			{/*  */}
+			<Box className='lg:col-span-2 md:col-span-2 grid gap-2'>
+				<Typography>Gambar Baru Anda :</Typography>
 				<Box className='grid lg:grid-cols-4 md:grid-cols-4 grid-cols-2 gap-2'>
 					{imagePreview && imagePreview.length > 0 ? (
 						imagePreview.map((item, index) => (

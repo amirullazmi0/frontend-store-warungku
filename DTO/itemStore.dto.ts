@@ -14,10 +14,21 @@ export interface itemStore {
   updatedAt: Date;
   userId: string;
   itemStoreImages: ItemStoreImage[];
+  categoriesItemStore?: CategoriesItemStoreDTO[]
   itemStore?: {
     itemStoreImages: ItemStoreImage[];
   };
 }
+
+export interface CategoriesItemStoreDTO {
+  categoryId: string
+  itemStoreId: string
+  category: {
+    id: string,
+    name: string,
+  }
+}
+
 export interface PostItemStoreDTO {
   name: string;
   price: string;

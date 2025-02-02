@@ -10,9 +10,11 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 
 import colors from '@/app/ComponentGlobals/colors';
+import { useRouter } from 'next/navigation';
 const Section: React.FC<{ itemId: string }> = ({ itemId }) => {
 	const [item, setItem] = useState<itemStore>();
 	const apiUrl = process.env.API_URL;
+	const navigation = useRouter();
 	const accessToken = Cookies.get(`access-token`);
 
 	const getItem = async () => {
@@ -75,6 +77,7 @@ const Section: React.FC<{ itemId: string }> = ({ itemId }) => {
 			sx={{
 				display: 'flex',
 				flexDirection: 'column',
+				minHeight: '100vh',
 			}}>
 			<Box
 				className='shadow-md lg:w-[60%] flex flex-col items-center p-10 gap-5'
@@ -135,6 +138,7 @@ const Section: React.FC<{ itemId: string }> = ({ itemId }) => {
 				</Box>
 
 				<IconButton
+					onClick={() => navigation.push(`/store/edit-item/${itemId}`)}
 					sx={{
 						backgroundColor: colors.warning,
 						':hover': {

@@ -16,7 +16,7 @@ import { LoginFunction } from '@/function/auth';
 import { useRouter } from 'next/navigation';
 import Cookies from 'js-cookie';
 import { useForm, SubmitHandler } from 'react-hook-form';
-import { AlertFailed, AlertSuccess } from '../ComponentGlobals/Alert';
+import { AlertFailed, AlertSuccess } from '../ComponentGlobals/alert';
 import { loginDTO } from '@/DTO/auth.dto';
 
 const Section = () => {

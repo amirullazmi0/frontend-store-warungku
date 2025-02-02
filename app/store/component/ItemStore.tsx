@@ -369,6 +369,7 @@ const ItemStore = () => {
 										<DescriptionIcon />
 									</IconButton>
 									<IconButton
+										onClick={() => navigation.push(`/store/edit-item/${i.id}`)}
 										sx={{
 											backgroundColor: colors.warning,
 											':hover': {
