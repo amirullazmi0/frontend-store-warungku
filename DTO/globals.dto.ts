@@ -1,6 +1,6 @@
-export interface GlobalsDTO {
-    success?: boolean,
+export interface GlobalsAxiosResponse<T> {
+    success?: boolean
     message?: string
-    data?: any
+    data?: T
     error?: any
 }

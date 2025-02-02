@@ -35,3 +35,8 @@ export interface WishlistItem {
   userId: string;
   itemStore: itemStore;
 }
+
+export interface CategoryDTO {
+  id: string
+  name: string
+}
