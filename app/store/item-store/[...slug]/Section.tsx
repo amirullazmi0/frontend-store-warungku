@@ -1,7 +1,7 @@
 'use client';
 import { itemStore } from '@/DTO/itemStore.dto';
 import axios from 'axios';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Cookies from 'js-cookie';
 import defaultJpg from '@/public/image/defaultJpg.png';
 import Image from 'next/image';
@@ -10,9 +10,11 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 
 import colors from '@/app/ComponentGlobals/colors';
+import { useRouter } from 'next/navigation';
 const Section: React.FC<{ itemId: string }> = ({ itemId }) => {
 	const [item, setItem] = useState<itemStore>();
 	const apiUrl = process.env.API_URL;
+	const navigation = useRouter();
 	const accessToken = Cookies.get(`access-token`);
 
 	const getItem = async () => {
@@ -34,11 +36,48 @@ const Section: React.FC<{ itemId: string }> = ({ itemId }) => {
 		getItem();
 	}, []);
 
+	const [activeIndex, setActiveIndex] = useState(0);
+	const carouselRef = useRef<HTMLDivElement>(null); // ✅ Explicitly set the type
+
+	useEffect(() => {
+		const handleScroll = () => {
+			if (!carouselRef.current) return;
+
+			const slides = carouselRef.current.children;
+			let currentIndex = 0;
+			let minOffset = Infinity;
+
+			for (let i = 0; i < slides.length; i++) {
+				const rect = slides[i].getBoundingClientRect();
+				const offset = Math.abs(rect.left - carouselRef.current.getBoundingClientRect().left);
+
+				if (offset < minOffset) {
+					minOffset = offset;
+					currentIndex = i;
+				}
+			}
+
+			setActiveIndex(currentIndex);
+		};
+
+		const carouselElement = carouselRef.current;
+		if (carouselElement) {
+			carouselElement.addEventListener('scroll', handleScroll);
+		}
+
+		return () => {
+			if (carouselElement) {
+				carouselElement.removeEventListener('scroll', handleScroll);
+			}
+		};
+	}, []);
+
 	return (
 		<Box
 			sx={{
 				display: 'flex',
 				flexDirection: 'column',
+				minHeight: '100vh',
 			}}>
 			<Box
 				className='shadow-md lg:w-[60%] flex flex-col items-center p-10 gap-5'
@@ -46,21 +85,41 @@ const Section: React.FC<{ itemId: string }> = ({ itemId }) => {
 					padding: 2,
 					borderRadius: 3,
 				}}>
-				<Box className="grid lg:grid-cols-6 md:grid-cols-4 grid-cols-3 gap-3">
-					{item?.itemStoreImages.map((image, index) => {
-						return (
-							<Box
+				<Box className='relative'>
+					{/* Carousel */}
+					<div
+						ref={carouselRef}
+						className='carousel w-full aspect-video'>
+						{item?.itemStoreImages.map((image, index) => (
+							<div
 								key={index}
-								className='shadow-md p-2 rounded'>
-								<Image
-									alt=''
-									width={200}
-									height={200}
-									src={image.path || defaultJpg}
+								id={`item${index}`}
+								className='carousel-item w-full rounded-xl overflow-hidden flex justify-center'>
+								<img
+									src={image.path ?? ''}
+									className='h-full object-cover'
+									alt={`Image ${index}`}
 								/>
-							</Box>
-						);
-					})}
+							</div>
+						))}
+					</div>
+
+					{/* Thumbnail Navigation with Black Transparent Background */}
+					<div className='w-full flex rounded-md mt-2'>
+						{item?.itemStoreImages.map((image, index) => (
+							<a
+								key={index}
+								href={`#item${index}`}
+								className={`w-[10%] p-1 rounded-md ${activeIndex === index ? 'border-2 border-white opacity-100' : 'opacity-50'}`}
+								onClick={() => setActiveIndex(index)}>
+								<img
+									alt=''
+									src={image.path || defaultJpg.src}
+									className='object-cover rounded-md w-full'
+								/>
+							</a>
+						))}
+					</div>
 				</Box>
 
 				<Box className='grid lg:md:grid-cols-4 w-full gap-4'>
@@ -79,6 +138,7 @@ const Section: React.FC<{ itemId: string }> = ({ itemId }) => {
 				</Box>
 
 				<IconButton
+					onClick={() => navigation.push(`/store/edit-item/${itemId}`)}
 					sx={{
 						backgroundColor: colors.warning,
 						':hover': {

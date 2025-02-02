@@ -14,7 +14,7 @@ const Section = () => {
 	};
 
 	return (
-		<div>
+		<div className='w-full min-h-screen'>
 			<Typography>List Transaksi</Typography>
 			<TabContext value={value}>
 				<Box sx={{ borderBottom: 1, borderColor: 'divider', mt: 3 }}>
