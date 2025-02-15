@@ -229,7 +229,7 @@ const TransactionsSection: React.FC = () => {
                         />
                       </TableCell>
                       <TableCell>{item.itemName}</TableCell>
-                      <TableCell>{item.quantity}</TableCell>
+                      <TableCell>{item.qty}</TableCell>
                       <TableCell>{item.price}</TableCell>
                     </TableRow>
                   ))}
