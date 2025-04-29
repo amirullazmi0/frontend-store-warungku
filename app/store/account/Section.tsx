@@ -1,16 +1,17 @@
 'use client';
 import React, { ChangeEvent, useEffect, useState } from 'react';
-import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
 import PaymentsOutlinedIcon from '@mui/icons-material/PaymentsOutlined';
 import Cookies from 'js-cookie';
 import axios from 'axios';
 import { Alert, Button, Divider, Skeleton, TextField } from '@mui/material';
 import { userDTO } from '@/DTO/user.dto';
 import FormUpdateAddress from './FormUpdateAddress';
+import { useRouter } from 'next/navigation';
 
 const Section = () => {
 	const [profile, setProfile] = useState<userDTO | undefined>(undefined);
 	const [updateProfileSuccess, setUpdateProfileSuccess] = useState<boolean | undefined>(undefined);
+	const navigation = useRouter();
 	const API_URL = process.env.API_URL;
 	const accessToken = Cookies.get('access-token');
 
@@ -77,7 +78,9 @@ const Section = () => {
 					<div className='lg:md:w-[70%] w-full'>
 						<div className='card bg-white shadow-lg'>
 							<div className='card-body'>
-								<button className='button w-fit'>
+								<button
+									onClick={() => navigation.push('/store/transaction')}
+									className='button w-fit'>
 									<div className='card bg-white shadow lg:md:w-44 text-center overflow-hidden'>
 										<div className='card-body'>
 											<div className=''>
