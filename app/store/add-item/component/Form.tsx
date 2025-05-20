@@ -345,9 +345,11 @@ const Form = () => {
 										},
 									},
 								}}
-								inputProps={{
-									maxLength: 100,
-								}}
+								inputProps={
+									{
+										// maxLength: 100,
+									}
+								}
 							/>
 						</Box>
 						{fieldState.error && (
