@@ -92,10 +92,7 @@ const ItemStore = () => {
 				},
 			});
 
-			console.log('Response:', response.data);
-
 			if (response.data) {
-				console.log('Data received:', response.data);
 				setItem(response.data.data);
 			}
 		} catch (error) {
