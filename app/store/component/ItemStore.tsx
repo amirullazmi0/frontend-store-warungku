@@ -3,7 +3,26 @@ import axios from 'axios';
 import React, { useEffect, useRef, useState } from 'react';
 import Cookies from 'js-cookie';
 import { CategoryDTO, itemStore } from '@/DTO/itemStore.dto';
-import { Box, Button, Checkbox, FormControl, FormControlLabel, FormHelperText, IconButton, InputAdornment, OutlinedInput, Typography } from '@mui/material';
+import {
+	Box,
+	Button,
+	Checkbox,
+	FormControl,
+	FormControlLabel,
+	FormHelperText,
+	IconButton,
+	InputAdornment,
+	OutlinedInput,
+	Paper,
+	Stack,
+	Table,
+	TableBody,
+	TableCell,
+	TableContainer,
+	TableHead,
+	TableRow,
+	Typography,
+} from '@mui/material';
 import Image from 'next/image';
 import defaultJpg from '@/public/image/defaultJpg.png';
 import colors from '@/app/ComponentGlobals/colors';
@@ -72,6 +91,8 @@ const ItemStore = () => {
 					Authorization: `Bearer ${accessToken}`,
 				},
 			});
+
+			console.log('Response:', response.data);
 
 			if (response.data) {
 				console.log('Data received:', response.data);
@@ -303,102 +324,96 @@ const ItemStore = () => {
 				</div>
 			</dialog>
 
-			<Box className='grid lg:grid-cols-6 md:grid-cols-4 lg:gap-5 md:gap-3 gap-1  min-h-screen w-full h-fit'>
-				<RenderAlertDelete open={alertDelete} />
-				{item && item.length > 0 ? (
-					item.map((i, index) => {
-						return (
-							<Box
-								className='shadow-lg flex flex-col items-center gap-2 h-fit min-w-40'
-								key={index}
-								sx={{
-									padding: '0.625rem',
-									borderRadius: '10px',
-									backgroundColor: 'white',
-									textTransform: 'none',
-									':hover': {
-										backgroundColor: 'white',
-									},
-								}}>
-								<Image
-									alt={i.name}
-									height={100}
-									width={500}
-									className='aspect-square object-cover'
-									src={i.itemStoreImages[0]?.path ?? defaultJpg}
-									style={{
-										borderRadius: '10px',
-									}}
-								/>
-								<Typography
-									sx={{
-										color: 'black',
-										fontWeight: 600,
-									}}>
-									{i.name}
-								</Typography>
-								<Typography
-									sx={{
-										width: '100%',
-										textAlign: 'left',
-									}}>
-									Rp.{' '}
-									<span
-										style={{
-											fontWeight: 600,
-										}}>
-										{formatNumber(i.price)}
-									</span>
-								</Typography>
-								<Typography
-									sx={{
-										width: '100%',
-										textAlign: 'left',
-									}}>
-									qty : {i.qty}
-								</Typography>
-								<Box className='flex flex-wrap w-full justify-center gap-1'>
-									<IconButton
-										onClick={() => navigation.push(`/store/item-store/${i.id}`)}
-										sx={{
-											backgroundColor: colors.success,
-											':hover': {
-												backgroundColor: colors.success,
-											},
-										}}>
-										<DescriptionIcon />
-									</IconButton>
-									<IconButton
-										onClick={() => navigation.push(`/store/edit-item/${i.id}`)}
-										sx={{
-											backgroundColor: colors.warning,
-											':hover': {
-												backgroundColor: colors.warning,
-											},
-										}}>
-										<EditIcon />
-									</IconButton>
-									<IconButton
-										onClick={() => handleAlertDelete(i.id)}
-										sx={{
-											backgroundColor: colors.error,
-											color: 'white',
-											':hover': {
-												backgroundColor: colors.error,
-											},
-										}}>
-										<DeleteIcon />
-									</IconButton>
-								</Box>
-							</Box>
-						);
-					})
-				) : (
-					<Box className='p-5 text-center w-full lg:col-span-6 md:col-span-4'>
-						<Typography>Tidak Ada Item</Typography>
-					</Box>
-				)}
-			</Box>
+			<TableContainer component={Paper}>
+				<Table
+					sx={{ minWidth: 650 }}
+					aria-label='simple table'>
+					<TableHead>
+						<TableRow>
+							<TableCell></TableCell>
+							<TableCell align='center'>Gambar</TableCell>
+							<TableCell align='center'>Nama</TableCell>
+							<TableCell align='center'>Stok</TableCell>
+							<TableCell align='center'>Harga</TableCell>
+							<TableCell align='center'>Aksi</TableCell>
+						</TableRow>
+					</TableHead>
+					<TableBody>
+						{item &&
+							item.length > 0 &&
+							item.map((row, index) => (
+								<TableRow
+									key={index}
+									sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+									<TableCell
+										component='th'
+										scope='row'>
+										<Typography
+											fontWeight={'bold'}
+											textAlign={'center'}>
+											{index + 1}
+										</Typography>
+									</TableCell>
+									<TableCell align='center'>
+										<Stack
+											direction='row'
+											justifyContent='center'
+											alignItems='center'>
+											<Image
+												alt={row.name}
+												height={100}
+												width={100}
+												className='aspect-square object-cover'
+												src={row.itemStoreImages[0]?.path ?? defaultJpg}
+												style={{
+													borderRadius: '10px',
+												}}
+											/>
+										</Stack>
+									</TableCell>
+									<TableCell align='center'>{row.name}</TableCell>
+									<TableCell align='center'>{row.qty}</TableCell>
+									<TableCell align='center'>Rp.{formatNumber(row.price)}</TableCell>
+									<TableCell align='center'>
+										<Box className='flex flex-wrap w-full justify-center gap-1'>
+											<IconButton
+												onClick={() => navigation.push(`/store/item-store/${row.id}`)}
+												sx={{
+													backgroundColor: colors.success,
+													':hover': {
+														backgroundColor: colors.success,
+													},
+												}}>
+												<DescriptionIcon />
+											</IconButton>
+											<IconButton
+												onClick={() => navigation.push(`/store/edit-item/${row.id}`)}
+												sx={{
+													backgroundColor: colors.warning,
+													':hover': {
+														backgroundColor: colors.warning,
+													},
+												}}>
+												<EditIcon />
+											</IconButton>
+											<IconButton
+												onClick={() => handleAlertDelete(row.id)}
+												sx={{
+													backgroundColor: colors.error,
+													color: 'white',
+													':hover': {
+														backgroundColor: colors.error,
+													},
+												}}>
+												<DeleteIcon />
+											</IconButton>
+										</Box>
+									</TableCell>
+								</TableRow>
+							))}
+					</TableBody>
+				</Table>
+			</TableContainer>
 		</>
 	);
 };
