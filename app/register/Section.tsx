@@ -7,10 +7,10 @@ import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import Link from 'next/link';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { RegisterDTO } from '@/DTO/auth.dto';
-import { RegisterFunction } from '@/function/auth';
 import Cookies from 'js-cookie';
 import { useRouter } from 'next/navigation';
 import { AlertFailed, AlertSuccess } from '../ComponentGlobals/alert';
+import axios from 'axios';
 
 const Section = () => {
 	const [showPassword, setShowPassword] = useState(false);
@@ -31,7 +31,15 @@ const Section = () => {
 	const password = watch('password', '');
 	const onSubmit: SubmitHandler<RegisterDTO> = async data => {
 		try {
-			const register = await RegisterFunction(data);
+			const API_URL = process.env.API_URL;
+			const accessToken = Cookies.get('access-token');
+			const response = await axios.post(`${API_URL}/auth/login`, data, {
+				headers: {
+					Authorization: `Bearer ${accessToken}`,
+				},
+			});
+
+			const register = response.data;
 
 			if (register.success === true) {
 				setLoginSuccess(true);
