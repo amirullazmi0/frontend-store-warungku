@@ -30,11 +30,7 @@ const Section = () => {
 		const accessToken = Cookies.get('access-token');
 
 		try {
-			const response = await axios.post(`${API_URL}/auth/login`, data, {
-				headers: {
-					Authorization: `Bearer ${accessToken}`,
-				},
-			});
+			const response = await axios.post(`${API_URL}/auth/login`, data);
 
 			const login = response.data;
 
