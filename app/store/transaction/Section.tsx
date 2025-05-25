@@ -21,6 +21,7 @@ import {
 	Tab,
 } from '@mui/material';
 import { TabContext, TabList, TabPanel } from '@mui/lab';
+import { formatNumber } from '@/app/utils/formatNumber';
 
 const TransactionsSection: React.FC = () => {
 	const [tabValue, setTabValue] = useState('PAID');
@@ -120,7 +121,12 @@ const TransactionsSection: React.FC = () => {
 							<TableRow key={tx.transaction_id}>
 								<TableCell>{tx.invoice?.invoiceNumber || 'N/A'}</TableCell>
 								<TableCell>{new Date(tx.createdAt).toLocaleString()}</TableCell>
-								<TableCell>{tx.total}</TableCell>
+								<TableCell
+									sx={{
+										fontWeight: 'bold',
+									}}>
+									Rp.{formatNumber(tx.total)}
+								</TableCell>
 								<TableCell>{tx.customer_fullname}</TableCell>
 								<TableCell>
 									{tx.customer_address} {tx.customer_city}
@@ -208,10 +214,10 @@ const TransactionsSection: React.FC = () => {
 							<Table>
 								<TableHead>
 									<TableRow>
-										<TableCell>Image</TableCell>
-										<TableCell>Item Name</TableCell>
-										<TableCell>Quantity</TableCell>
-										<TableCell>Price</TableCell>
+										<TableCell></TableCell>
+										<TableCell>Nama Barang</TableCell>
+										<TableCell align='center'>Jumlah</TableCell>
+										<TableCell align='right'>Price</TableCell>
 									</TableRow>
 								</TableHead>
 								<TableBody>
@@ -229,10 +235,21 @@ const TransactionsSection: React.FC = () => {
 												/>
 											</TableCell>
 											<TableCell>{item.itemName}</TableCell>
-											<TableCell>{item.qty}</TableCell>
-											<TableCell>{item.price}</TableCell>
+											<TableCell align='center'>{item.qty}</TableCell>
+											<TableCell align='right'>Rp. {formatNumber(item.price)}</TableCell>
 										</TableRow>
 									))}
+									<TableRow>
+										<TableCell
+											colSpan={4}
+											align='right'>
+											<Typography
+												variant='h6'
+												fontWeight={600}>
+												Total : Rp. {formatNumber(selectedItems.reduce((acc, item) => acc + item.price * item.qty, 0))}
+											</Typography>
+										</TableCell>
+									</TableRow>
 								</TableBody>
 							</Table>
 						</TableContainer>

@@ -93,6 +93,8 @@ const ItemStore = () => {
 			});
 
 			if (response.data) {
+				console.log('response', response.data);
+
 				setItem(response.data.data);
 			}
 		} catch (error) {
