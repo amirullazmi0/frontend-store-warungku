@@ -7,20 +7,20 @@ RUN apk add --no-cache bash
 # Buat direktori kerja
 WORKDIR /app
 
-# Salin package.json dan yarn.lock dulu untuk caching layer install dependencies
-COPY package.json yarn.lock ./
+# Salin package.json dan package-lock.json dulu untuk caching layer install dependencies
+COPY package.json package-lock.json ./
 
 # Install dependencies
-RUN yarn install --frozen-lockfile
+RUN npm install --legacy-peer-deps
 
 # Salin seluruh source code
 COPY . .
 
 # Build Next.js app (output di .next)
-RUN yarn build
+RUN npm run build
 
 # Expose port default Next.js
 EXPOSE 3000
 
 # Jalankan Next.js dalam mode production
-CMD ["yarn", "start"]
+CMD ["npm", "start"]
