@@ -33,7 +33,7 @@ const Section = () => {
 		try {
 			const API_URL = process.env.API_URL;
 			const accessToken = Cookies.get('access-token');
-			const response = await axios.post(`${API_URL}/auth/login`, data, {
+			const response = await axios.post(`${API_URL}/auth/register`, data, {
 				headers: {
 					Authorization: `Bearer ${accessToken}`,
 				},
@@ -184,7 +184,7 @@ const Section = () => {
 							onClick={handleSubmit(onSubmit)}
 							variant='contained'
 							disableElevation>
-							Login
+							Register
 						</Button>
 						<hr className='mt-4 mb-4' />
 						<div className='text-center text-xs'>
