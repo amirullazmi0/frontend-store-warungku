@@ -44,7 +44,8 @@ jobs:
        Dockerfile
        captain-definition
        tsconfig.json
-       next.config.ts
+       tailwind.config.ts
+       next.config.mjs
       outPath: deploy.tar
 
    - name: Deploy App to CapRover
